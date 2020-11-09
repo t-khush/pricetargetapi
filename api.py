@@ -52,7 +52,7 @@ class getData(Resource):
         query = "SELECT * FROM stocks WHERE ticker = '{s}'".format(s = stock_name) 
         query = connection.execute(query) 
         return{
-            stock_name : [i for i in query.cursor.fetchall()]
+            stock_name : [dict(zip(tuple (query.keys()) ,i)) for i in query.cursor]
         }
 
 api.add_resource(getData, "/getData")
