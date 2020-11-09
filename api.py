@@ -34,6 +34,8 @@ def scrape(stock_name):
         low = float(set[4])
         buyOrSell = soup.find('span', class_ = 'wsod_rating')
         name  = soup.find('h1', class_ = 'wsod_fLeft')
+        query = "DELETE FROM stocks WHERE ticker = '{st}'".format(st = stock_name)
+        connection.execute(query) 
         query = "INSERT INTO stocks(ticker, company, low, median, high, analysts, date, buysell) VALUES('{sName}', '{name}', {lPrice}, {medPrice}, {highPrice}, {aCount}, '{d}', '{bS}')".format(sName = stock_name, name = name.text, lPrice = low, medPrice = median, highPrice = high, aCount= analysts, bS = buyOrSell.text, d = datetime.now())
         connection.execute(query)
     except: 
@@ -46,7 +48,7 @@ class getData(Resource):
         connection = engine.connect() 
         stock_name = request.args.get("stock")
 
-        if(connection.execute("SELECT * FROM stocks WHERE ticker='"+stock_name+"' AND date('now','-1 day')").fetchone() is None): 
+        if(connection.execute("SELECT * FROM stocks WHERE ticker='"+stock_name+"' AND date('now','-3 day')").fetchone() is None): 
             if(scrape(stock_name)==-1): 
                 return {"404": "Error"}
         query = "SELECT * FROM stocks WHERE ticker = '{s}'".format(s = stock_name) 
