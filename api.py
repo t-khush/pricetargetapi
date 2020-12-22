@@ -43,7 +43,6 @@ def scrape(stock_name):
 
 
 class getData(Resource): 
-
     def get(self): 
         connection = engine.connect() 
         stock_name = request.args.get("stock")
